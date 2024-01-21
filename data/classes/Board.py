@@ -92,6 +92,20 @@ class Board:
     def undoMove(self):
         if len(self.moveLog) != 0:
             move = self.moveLog.pop()
+            square1 = self.get_square_from_pos((move.startRow, move.startCol))
+            square2 = self.get_square_from_pos((move.endRow, move.endCol))
+
+            square1.occupying_piece = move.pieceMoved
+            square1.occupying_piece.pos, square1.occupying_piece.x, square1.occupying_piece.y = (
+                move.startRow, move.startCol), move.startRow, move.startCol
+            square1.pos, square1.x, square1.y = (move.startRow, move.startCol), move.startRow, move.startCol
+
+            square2.occupying_piece = move.pieceCaptured
+            if square2.occupying_piece is not None:
+                square2.occupying_piece.pos, square2.occupying_piece.x, square2.occupying_piece.y = (
+                    move.endRow, move.endCol), move.endRow, move.endCol
+            square2.pos, square2.x, square2.y = (move.endRow, move.endCol), move.endRow, move.endCol
+
             self.turn = 'white' if self.turn == 'black' else 'black'
 
     def is_in_check(self, color, board_change=None):  # board_change = [(x1, y1), (x2, y2)]

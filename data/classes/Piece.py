@@ -1,5 +1,9 @@
+from data.classes.Move import Move
+
+
 class Piece:
     def __init__(self, pos, color, board):
+        self.notation = 'Piece'
         self.pos = pos
         self.x = pos[0]
         self.y = pos[1]
@@ -11,8 +15,7 @@ class Piece:
             i.highlight = False
 
         if square in self.get_valid_moves(board) or force:
-            board.moveLog.append([self.pos, square.pos])
-
+            board.moveLog.append(Move(self.pos, square.pos, board))
             prev_square = board.get_square_from_pos(self.pos)
             self.pos, self.x, self.y = square.pos, square.x, square.y
 
@@ -22,7 +25,7 @@ class Piece:
             self.has_moved = True
 
             # Pawn promotion
-            if self.notation == ' ':
+            if self.notation == 'P':
                 if self.y == 0 or self.y == 7:
                     from data.classes.pieces.Queen import Queen
                     square.occupying_piece = Queen(
@@ -70,3 +73,6 @@ class Piece:
     # True for all pieces except pawn
     def attacking_squares(self, board):
         return self.get_moves(board)
+
+    def get_possible_moves(self, board):
+        return type(self).get_possible_moves(self, board)
